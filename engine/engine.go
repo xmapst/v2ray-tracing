@@ -32,8 +32,8 @@ func New(address string) *Engine {
 }
 
 func (e *Engine) Run() {
-    go e.processLogger()
-    go e.output()
+	go e.processLogger()
+	go e.output()
 	for {
 		var stream logService.LoggerService_FollowLogClient
 		_ = retry.Do(

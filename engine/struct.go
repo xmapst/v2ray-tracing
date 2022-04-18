@@ -50,6 +50,6 @@ type Traffic struct {
 	Bound     string `json:"bound"`
 	Name      string `json:"name"`
 	//Tag       string `json:"tag"`
-	Link      string `json:"link"`
-	Value     int64  `json:"value"`
+	Link  string `json:"link"`
+	Value int64  `json:"value"`
 }

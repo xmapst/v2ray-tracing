@@ -23,7 +23,7 @@ func (e *Engine) processLogger() {
 			match := consoleRegexp.FindStringSubmatch(line)
 			if match != nil {
 				e.outputCh <- Output{
-					Type:   OutputTypeConsole,
+					Type: OutputTypeConsole,
 					Data: Console{
 						Timestamp: time.Now().Unix(),
 						Level:     strings.ToLower(match[1]),
@@ -45,7 +45,7 @@ func (e *Engine) processLogger() {
 					logrus.Warnf("Failed to parse dst port: %s", err)
 				}
 				e.outputCh <- Output{
-					Type:  OutputTypeAccess,
+					Type: OutputTypeAccess,
 					Data: Access{
 						Timestamp:   time.Now().Unix(),
 						SrcProtocol: match[1],

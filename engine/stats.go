@@ -26,17 +26,17 @@ func (e *Engine) getRuntimeStats() {
 	e.outputCh <- Output{
 		Type: OutputTypeStats,
 		Data: Stats{
-			Timestamp:      time.Now().Unix(),
-			Uptime:         rsp.Uptime,
-			Sys:         rsp.Sys,
-            NumGoroutine:     rsp.NumGoroutine,
-            Alloc:  rsp.Alloc,
-            LiveObjects:    rsp.LiveObjects,
-            TotalAlloc: rsp.TotalAlloc,
-            Mallocs: rsp.Mallocs,
-            Frees:  rsp.Frees,
-            NumGC:     rsp.NumGC,
-            PauseTotalNs:  rsp.PauseTotalNs,
+			Timestamp:    time.Now().Unix(),
+			Uptime:       rsp.Uptime,
+			Sys:          rsp.Sys,
+			NumGoroutine: rsp.NumGoroutine,
+			Alloc:        rsp.Alloc,
+			LiveObjects:  rsp.LiveObjects,
+			TotalAlloc:   rsp.TotalAlloc,
+			Mallocs:      rsp.Mallocs,
+			Frees:        rsp.Frees,
+			NumGC:        rsp.NumGC,
+			PauseTotalNs: rsp.PauseTotalNs,
 		},
 	}
 }
@@ -54,6 +54,9 @@ func (e *Engine) getStats() {
 		return resp.Stat[i].Name < resp.Stat[j].Name
 	})
 	for _, stat := range resp.Stat {
+		if stat.Value == 0 {
+			continue
+		}
 		slice := strings.Split(stat.Name, ">>>")
 		if len(slice) != 4 {
 			continue
@@ -68,8 +71,8 @@ func (e *Engine) getStats() {
 				Bound:     strings.TrimSuffix(slice[0], "bound"),
 				Name:      slice[1],
 				//Tag:       slice[2],
-				Link:      strings.TrimSuffix(slice[3], "link"),
-				Value:     stat.Value,
+				Link:  strings.TrimSuffix(slice[3], "link"),
+				Value: stat.Value,
 			},
 		}
 	}
