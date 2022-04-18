@@ -10,6 +10,7 @@ import (
 
 var (
 	accessRegexp  = regexp.MustCompile(`^(\w+):(\d+\.\d+\.\d+\.\d+):(\d+) accepted (\w+):(.*):(\d+) \[(.*)]$`)
+	accessRegexp1  = regexp.MustCompile(`^(\d+\.\d+\.\d+\.\d+):(\d+) accepted (\w+):(.*):(\d+) \[(.*)]$`)
 	consoleRegexp = regexp.MustCompile(`^\[(\w+)] \[(\d+)] ([\w/]+): (.*)$`)
 )
 
@@ -35,12 +36,17 @@ func (e *Engine) processLogger() {
 			}
 		} else {
 			match := accessRegexp.FindStringSubmatch(line)
-			if match != nil {
-				srcPort, err := strconv.ParseInt(match[3], 10, 64)
+			if match == nil {
+				// TProxy access log
+				match = accessRegexp1.FindStringSubmatch(line)
+				if match == nil {
+					continue
+				}
+				srcPort, err := strconv.ParseInt(match[2], 10, 64)
 				if err != nil {
 					logrus.Warnf("Failed to parse src port: %s", err)
 				}
-				dstPort, err := strconv.ParseInt(match[6], 10, 64)
+				dstPort, err := strconv.ParseInt(match[5], 10, 64)
 				if err != nil {
 					logrus.Warnf("Failed to parse dst port: %s", err)
 				}
@@ -48,15 +54,37 @@ func (e *Engine) processLogger() {
 					Type: OutputTypeAccess,
 					Data: Access{
 						Timestamp:   time.Now().Unix(),
-						SrcProtocol: match[1],
-						Src:         match[2],
+						SrcProtocol: "tcp",
+						Src:         match[1],
 						SrcPort:     srcPort,
-						DstProtocol: match[4],
-						Dst:         match[5],
+						DstProtocol: match[3],
+						Dst:         match[4],
 						DstPort:     dstPort,
-						Outbound:    match[7],
+						Outbound:    match[6],
 					},
 				}
+				continue
+			}
+			srcPort, err := strconv.ParseInt(match[3], 10, 64)
+			if err != nil {
+				logrus.Warnf("Failed to parse src port: %s", err)
+			}
+			dstPort, err := strconv.ParseInt(match[6], 10, 64)
+			if err != nil {
+				logrus.Warnf("Failed to parse dst port: %s", err)
+			}
+			e.outputCh <- Output{
+				Type: OutputTypeAccess,
+				Data: Access{
+					Timestamp:   time.Now().Unix(),
+					SrcProtocol: match[1],
+					Src:         match[2],
+					SrcPort:     srcPort,
+					DstProtocol: match[4],
+					Dst:         match[5],
+					DstPort:     dstPort,
+					Outbound:    match[7],
+				},
 			}
 		}
 	}
