@@ -22,6 +22,7 @@ services:
       - no-new-privileges:true
     restart: always
     network_mode: host
+    user: "0"
     volumes:
       - ./grafana:/var/lib/grafana
   vector:
