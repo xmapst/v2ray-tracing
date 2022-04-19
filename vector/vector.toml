@@ -1,0 +1,19 @@
+[sources.mixed]
+type = "socket"
+address = "0.0.0.0:9091"
+mode = "tcp"
+decoding.codec = "json"
+
+[transforms.mixed-input]
+type = "remap"
+inputs = [ "mixed" ]
+source = """
+del(.host)
+del(.source_type)"""
+
+[sinks.loki]
+type = "loki"
+inputs = [ "mixed-input" ]
+endpoint = "http://localhost:3100"
+encoding.codec = "json"
+labels.type = "{{ type }}"

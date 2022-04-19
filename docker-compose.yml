@@ -1,0 +1,53 @@
+version: '3'
+services:
+  loki:
+    image: grafana/loki:2.4.2
+    container_name: loki
+    hostname: loki
+    privileged: true
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+    network_mode: host
+    user: "0"
+    volumes:
+      - ./loki/data:/loki
+      - ./loki/config.yaml:/etc/loki/local-config.yaml
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    hostname: grafana
+    privileged: true
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+    network_mode: host
+    volumes:
+      - ./grafana:/var/lib/grafana
+  vector:
+    image: timberio/vector:0.X-alpine
+    container_name: vector
+    hostname: vector
+    privileged: true
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+    network_mode: host
+    volumes:
+      - ./vector/vector.toml:/etc/vector/vector.toml
+    depends_on:
+      - loki
+  reporter:
+    build: .
+    container_name: reporter
+    hostname: reporter
+    privileged: true
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+    network_mode: host
+    environment:
+      V2RAY_API: 'localhost:1078'
+      VECTOR_ADDR: 'vector:9091'
+    depends_on:
+      - vector
