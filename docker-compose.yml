@@ -49,6 +49,6 @@ services:
     network_mode: host
     environment:
       V2RAY_API: 'localhost:1078'
-      VECTOR_ADDR: 'vector:9091'
+      VECTOR_ADDR: 'localhost:9091'
     depends_on:
       - vector
