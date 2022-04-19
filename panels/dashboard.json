@@ -214,15 +214,6 @@
           "hide": false,
           "legendFormat": "",
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "OcHtJT-7k"
-          },
-          "expr": "sum by (type) (sum_over_time({type=\"traffic\"} | json | unwrap value [$__interval]))",
-          "hide": false,
-          "refId": "B"
         }
       ],
       "title": "流量统计",
@@ -333,7 +324,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],
@@ -348,6 +339,6 @@
   "timezone": "",
   "title": "V2ray",
   "uid": "pOXPjK-7z",
-  "version": 21,
+  "version": 23,
   "weekStart": ""
 }
