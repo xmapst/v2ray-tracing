@@ -72,9 +72,13 @@ An example of a v2ray tracing exporter API.
 }
 ```
 
-## Logs dashboard
+## dashboard
 
-![screenshot](./screenshot/screenshot.jpg)
+![dashboard](./screenshot/dashboard.png)
+
+## Logs
+
+![logs](./screenshot/logs.jpg)
 
 ## How to use
 
