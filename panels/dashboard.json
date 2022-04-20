@@ -24,14 +24,14 @@
   "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "loki",
-        "uid": "CaYB_ZQ7z"
+        "uid": "sn1FkWQnz"
       },
       "fieldConfig": {
         "defaults": {
@@ -75,7 +75,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.0.0-58466pre",
+      "pluginVersion": "v1.0",
       "targets": [
         {
           "datasource": {
@@ -156,7 +156,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "CaYB_ZQ7z"
+        "uid": "sn1FkWQnz"
       },
       "description": "",
       "fieldConfig": {
@@ -203,7 +203,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.0-58466pre",
+      "pluginVersion": "v1.0",
       "targets": [
         {
           "datasource": {
@@ -237,7 +237,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "CaYB_ZQ7z"
+        "uid": "sn1FkWQnz"
       },
       "fieldConfig": {
         "defaults": {
@@ -314,9 +314,9 @@
             "type": "loki",
             "uid": "OcHtJT-7k"
           },
-          "expr": "avg by (type,link,name) (sum_over_time({type=\"traffic\"} | json | unwrap value [$__interval]))",
+          "expr": "avg by (link) (sum_over_time({type=\"traffic\"} | json | unwrap value [$__interval]))",
           "hide": false,
-          "legendFormat": "{{name}}_{{link}}",
+          "legendFormat": "{{link}}",
           "refId": "A"
         }
       ],
@@ -332,13 +332,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "V2ray",
   "uid": "pOXPjK-7z",
-  "version": 23,
+  "version": 5,
   "weekStart": ""
 }
