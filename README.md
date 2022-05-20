@@ -1,6 +1,16 @@
 # v2ray-tracing
 An example of a v2ray tracing exporter API.
 
+## Parameters
++ `V2RAY_API`: The v2ray API address.
++ `VECTOR_ADDR`: The vector address.
+
+## Run in Docker
+```bash
+docker pull xmapst/v2ray-tracing
+docker run -it --rm -e V2RAY_API=localhost:1078 -e VECTOR_ADDR=localhost:9091 xmapst/v2ray-tracing
+```
+
 ## V2ray config example
 ```json
 {
