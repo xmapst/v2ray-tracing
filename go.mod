@@ -7,7 +7,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v1.6.1
 	github.com/v2fly/v2ray-core/v5 v5.1.0
-	google.golang.org/grpc v1.48.0
+	google.golang.org/grpc v1.50.1
 )
 
 require (
