@@ -3,7 +3,7 @@ module github.com/xmapst/v2ray-tracing
 go 1.18
 
 require (
-	github.com/avast/retry-go/v4 v4.3.2
+	github.com/avast/retry-go/v4 v4.3.3
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	github.com/v2fly/v2ray-core/v5 v5.2.1
