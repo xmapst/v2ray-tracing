@@ -3,7 +3,13 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"io"
+	"regexp"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/avast/retry-go/v4"
 	"github.com/sirupsen/logrus"
 	logService "github.com/v2fly/v2ray-core/v5/app/log/command"
@@ -11,12 +17,6 @@ import (
 	"github.com/v2fly/v2ray-core/v5/common/net"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"io"
-	"regexp"
-	"sort"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Engine struct {
@@ -44,6 +44,11 @@ const (
 
 func (e *Engine) followLogger() {
 	for {
+		var err = e.ctx.Err()
+		if err != nil {
+			logrus.Warnf("Context failed %s, interrupt follow", err)
+			break
+		}
 		var logStream logService.LoggerService_FollowLogClient
 		_ = retry.Do(
 			func() (err error) {
@@ -68,13 +73,14 @@ func (e *Engine) followLogger() {
 					max = 8
 				}
 				duration := time.Second * max * max
-				fmt.Printf("dial %s failed %d times: %v, wait %s\n", e.v2rayAPI, n, err, duration.String())
+				logrus.Errorf("dial %s failed %d times: %v, wait %s", e.v2rayAPI, n, err, duration.String())
 				return duration
 			}),
 			retry.MaxDelay(time.Second*64),
 		)
 		logrus.Infof("connected to %s", e.v2rayAPI)
-		go e.stats()
+		var stats_ctx, stats_cancel = context.WithCancel(context.Background())
+		go e.stats(stats_ctx)
 	Out:
 		for {
 			select {
@@ -96,6 +102,7 @@ func (e *Engine) followLogger() {
 				}
 			}
 		}
+		stats_cancel()
 		_ = e.v2rayConn.Close()
 	}
 }
@@ -253,9 +260,15 @@ func (e *Engine) Run() {
 	}
 }
 
-func (e *Engine) stats() {
+func (e *Engine) stats(ctx context.Context) {
+	logrus.Info("start retrieve stats")
 	timeTick := time.Tick(time.Second)
 	for range timeTick {
+		var err = ctx.Err()
+		if err != nil {
+			logrus.Warnf("Stats Context failed %s, interrupt stats", err)
+			break
+		}
 		e.getRuntimeStats()
 		e.getStats()
 	}
