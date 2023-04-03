@@ -13,6 +13,7 @@ import (
 	"github.com/avast/retry-go/v4"
 	"github.com/sirupsen/logrus"
 	logService "github.com/v2fly/v2ray-core/v5/app/log/command"
+	observatoryService "github.com/v2fly/v2ray-core/v5/app/observatory/command"
 	statsService "github.com/v2fly/v2ray-core/v5/app/stats/command"
 	"github.com/v2fly/v2ray-core/v5/common/net"
 	"google.golang.org/grpc"
@@ -20,14 +21,15 @@ import (
 )
 
 type Engine struct {
-	ctx         context.Context
-	cancel      context.CancelFunc
-	v2rayAPI    string
-	vectorAddr  string
-	inputCh     chan string
-	outputCh    chan output
-	v2rayConn   *grpc.ClientConn
-	statsClient statsService.StatsServiceClient
+	ctx               context.Context
+	cancel            context.CancelFunc
+	v2rayAPI          string
+	vectorAddr        string
+	inputCh           chan string
+	outputCh          chan output
+	v2rayConn         *grpc.ClientConn
+	statsClient       statsService.StatsServiceClient
+	observatoryClient observatoryService.ObservatoryServiceClient
 }
 
 type output struct {
@@ -36,10 +38,11 @@ type output struct {
 }
 
 const (
-	OutputTypeAccess  = "access"
-	OutputTypeConsole = "console"
-	OutputTypeStats   = "stats"
-	OutputTypeTraffic = "traffic"
+	OutputTypeAccess      = "access"
+	OutputTypeConsole     = "console"
+	OutputTypeStats       = "stats"
+	OutputTypeTraffic     = "traffic"
+	OutputTypeObservatory = "observatory"
 )
 
 func (e *Engine) followLogger() {
@@ -64,6 +67,7 @@ func (e *Engine) followLogger() {
 					return err
 				}
 				e.statsClient = statsService.NewStatsServiceClient(e.v2rayConn)
+				e.observatoryClient = observatoryService.NewObservatoryServiceClient(e.v2rayConn)
 				return
 			},
 			retry.Attempts(0),
@@ -271,6 +275,7 @@ func (e *Engine) stats(ctx context.Context) {
 		}
 		e.getRuntimeStats()
 		e.getStats()
+		e.getObservatory()
 	}
 }
 
@@ -354,4 +359,63 @@ func (e *Engine) getStats() {
 			},
 		}
 	}
+}
+
+type HealthPing struct {
+	All       int64 `json:"all"`
+	Fail      int64 `json:"fail"`
+	Deviation int64 `json:"deviation"`
+	Average   int64 `json:"average"`
+	Max       int64 `json:"max"`
+	Min       int64 `json:"min"`
+}
+
+type Observatory struct {
+	Type            string      `json:"type"`
+	Alive           bool        `json:"alive"`
+	Delay           int64       `json:"delay"`
+	OutboundTag     string      `json:"outbound_tag"`
+	LastErrorReason string      `json:"last_error_reason"`
+	LastSeenTime    int64       `json:"last_seen_time"`
+	LastTryTime     int64       `json:"last_try_time"`
+	HealthPing      *HealthPing `json:"health_ping"`
+}
+
+func (e *Engine) getObservatory() {
+	r := &observatoryService.GetOutboundStatusRequest{}
+	resp, err := e.observatoryClient.GetOutboundStatus(e.ctx, r)
+	if err != nil {
+		logrus.Error("Failed to query observatory: ", err)
+		return
+	}
+	sort.Slice(resp.Status.Status, func(i, j int) bool {
+		return resp.Status.Status[i].OutboundTag < resp.Status.Status[j].OutboundTag
+	})
+	for _, status := range resp.Status.Status {
+		var ping HealthPing
+		if status.HealthPing != nil {
+			ping = HealthPing{
+				All:       status.HealthPing.All,
+				Fail:      status.HealthPing.Fail,
+				Deviation: status.HealthPing.Deviation,
+				Average:   status.HealthPing.Average,
+				Max:       status.HealthPing.Max,
+				Min:       status.HealthPing.Min,
+			}
+		}
+		e.outputCh <- output{
+			Type: OutputTypeObservatory,
+			Data: Observatory{
+				Type:            OutputTypeObservatory,
+				Alive:           status.Alive,
+				Delay:           status.Delay,
+				OutboundTag:     status.OutboundTag,
+				LastErrorReason: status.LastErrorReason,
+				LastSeenTime:    status.LastSeenTime,
+				LastTryTime:     status.LastTryTime,
+				HealthPing:      &ping,
+			},
+		}
+	}
+
 }
