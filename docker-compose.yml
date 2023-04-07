@@ -38,10 +38,10 @@ services:
       - ./vector/vector.toml:/etc/vector/vector.toml
     depends_on:
       - loki
-  reporter:
-    build: .
-    container_name: reporter
-    hostname: reporter
+  tracing:
+    image: xmapst/v2ray-tracing:latest
+    container_name: tracing
+    hostname: tracing
     privileged: true
     security_opt:
       - no-new-privileges:true

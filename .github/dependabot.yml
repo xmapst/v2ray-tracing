@@ -7,6 +7,6 @@ version: 2
 
 updates:
   - package-ecosystem: gomod
-    directory: '/'
+    directory: '/tracing'
     schedule:
       interval: weekly
