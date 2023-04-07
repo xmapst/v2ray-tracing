@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/avast/retry-go/v4 v4.3.3
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/v2fly/v2ray-core/v5 v5.4.1
 	google.golang.org/grpc v1.54.0
 )
@@ -13,7 +13,7 @@ require (
 require (
 	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/pires/go-proxyproto v0.6.2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/net v0.8.0 // indirect
