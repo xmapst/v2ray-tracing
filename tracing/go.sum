@@ -76,8 +76,8 @@ github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o
 github.com/v2fly/BrowserBridge v0.0.0-20210430233438-0570fc1d7d08 h1:4Yh46CVE3k/lPq6hUbEdbB1u1anRBXLewm3k+L0iOMc=
 github.com/v2fly/VSign v0.0.0-20201108000810-e2adc24bf848 h1:p1UzXK6VAutXFFQMnre66h7g1BjRKUnLv0HfmmRoz7w=
 github.com/v2fly/ss-bloomring v0.0.0-20210312155135-28617310f63e h1:5QefA066A1tF8gHIiADmOVOV5LS43gt3ONnlEl3xkwI=
-github.com/v2fly/v2ray-core/v5 v5.6.0 h1:m6UhvhrRFfhisqSu4UL3Xp8ZeRuk/kXEozJLoKUC47E=
-github.com/v2fly/v2ray-core/v5 v5.6.0/go.mod h1:iFLyTcrioq55DA7Q2BdRxvYrLx4m2pKzVukmoS33aTU=
+github.com/v2fly/v2ray-core/v5 v5.7.0 h1:84h2KMfs195EwIdj0DLStS2GhZMa65U0malDmteo3Nw=
+github.com/v2fly/v2ray-core/v5 v5.7.0/go.mod h1:iFLyTcrioq55DA7Q2BdRxvYrLx4m2pKzVukmoS33aTU=
 github.com/xiaokangwang/VLite v0.0.0-20220418190619-cff95160a432 h1:I/ATawgO2RerCq9ACwL0wBB8xNXZdE3J+93MCEHReRs=
 github.com/xtaci/smux v1.5.15 h1:6hMiXswcleXj5oNfcJc+DXS8Vj36XX2LaX98udog6Kc=
 go.starlark.net v0.0.0-20220817180228-f738f5508c12 h1:xOBJXWGEDwU5xSDxH6macxO11Us0AH2fTa9rmsbbF7g=
