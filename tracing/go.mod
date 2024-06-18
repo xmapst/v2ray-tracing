@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/v2fly/v2ray-core/v5 v5.16.1
 	google.golang.org/grpc v1.64.0
 )
